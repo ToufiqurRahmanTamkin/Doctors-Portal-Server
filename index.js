@@ -1,31 +1,28 @@
 const express = require('express');
-const bodyParser = require('body-parser');
 const cors = require('cors');
 const fileUpload = require('express-fileupload');
 const MongoClient = require('mongodb').MongoClient;
 require('dotenv').config()
 
-// const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.swu9d.mongodb.net/${process.env.DB_NAME}?retryWrites=true&w=majority`;
-const uri = `mongodb+srv://tamkin01:tamkin12345@cluster0.14pyq.mongodb.net/doctors-portal?retryWrites=true&w=majority`;
+const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.14pyq.mongodb.net/${process.env.DB_NAME}?retryWrites=true&w=majority`;
 
 const app = express()
-
 app.use(express.json());
 app.use(cors());
 app.use(express.static('doctors'));
 app.use(fileUpload());
 
-const port = 5000;
-
-app.get('/', (req, res) => {
-    console.log('database is working');
-})
+const port = 7000;
 
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
 client.connect(err => {
     const appointmentCollection = client.db("doctors-portal").collection("appointments");
     const doctorCollection = client.db("doctors-portal").collection("doctors");
     console.log('database connected')
+
+    app.get('/', (req, res) => {
+        console.log('database is working');
+    })
 
     app.post('/addAppointment', (req, res) => {
         const appointment = req.body;
